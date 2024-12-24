@@ -53,9 +53,10 @@ export const createCliente = async (req, res) => {
 /* -------------------------------------------------------------------------- */
 /*                           ACTUALIZAR UN CLIENTE                            */
 /* -------------------------------------------------------------------------- */
+// Función para actualizar un cliente
 export const updateCliente = async (req, res) => {
     const { id } = req.params;
-    const { personaData, cliente_fecha_afiliacion } = req.body;
+    const { persona_nombre, persona_apellido, persona_dni, persona_telefono, persona_fecha_nacimiento, persona_domicilio, cliente_fecha_afiliacion } = req.body;
 
     try {
         // Consulta SQL para obtener el ID de la persona asociado al cliente
@@ -71,13 +72,22 @@ export const updateCliente = async (req, res) => {
         const personaId = cliente[0].persona_id;
 
         // Actualizar la información de la persona
-        await updatePersona({ params: { id: personaId }, body: personaData });
+        await updatePersona({
+            params: { id: personaId },
+            body: {
+                persona_nombre,
+                persona_apellido,
+                persona_dni,
+                persona_telefono,
+                persona_fecha_nacimiento,
+                persona_domicilio
+            }
+        });
 
         // Actualizar la información del cliente
         const [result] = await pool.query(
             `UPDATE clientes 
-            SET 
-                cliente_fecha_afiliacion = ?
+            SET cliente_fecha_afiliacion = ?
             WHERE cliente_id = ?`,
             [cliente_fecha_afiliacion, id]
         );
