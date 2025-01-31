@@ -1,8 +1,9 @@
 import express from 'express';
 import axios from 'axios';
-import { io } from '../index.js';
 
 const router = express.Router();
+
+let paymentStatus = null; // Variable global para almacenar el estado del pago
 
 router.post('/webhook', express.json(), async (req, res) => {
     console.log('Webhook recibido');
@@ -20,8 +21,7 @@ router.post('/webhook', express.json(), async (req, res) => {
             // Verificar si el pedido está cerrado antes de procesarlo
             if (orderDetails.status === 'closed') {
                 console.log('Detalles del pedido:', orderDetails);
-                // Enviar una señal al frontend para indicar que el pago se ha realizado correctamente
-                io.emit('paymentConfirmed', orderDetails);
+                paymentStatus = orderDetails; // Almacenar los detalles del pedido
                 res.sendStatus(200);
             } else {
                 console.log(`El pedido aún no está cerrado, estado actual: ${orderDetails.status}`);
@@ -35,6 +35,11 @@ router.post('/webhook', express.json(), async (req, res) => {
         console.log(`Tipo de notificación no procesada: ${topic}`);
         res.sendStatus(200);
     }
+});
+
+// Ruta para consultar el estado del pago
+router.get('/payment-status', (req, res) => {
+    res.json(paymentStatus);
 });
 
 export default router;

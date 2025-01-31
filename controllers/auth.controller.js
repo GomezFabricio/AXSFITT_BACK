@@ -21,7 +21,7 @@ export const requestPasswordReset = async (req, res) => {
             from: 'cp15414621@gmail.com', // Usar el correo configurado
             to: email,
             subject: 'Recuperación de contraseña',
-            text: `Para restablecer tu contraseña, haz clic en el siguiente enlace: https://localhost:5174/reset-password?token=${token}`
+            text: `Para restablecer tu contraseña, haz clic en el siguiente enlace: https://axsfitt-front.vercel.app?token=${token}`
         };
 
         await transporter.sendMail(mailOptions);
